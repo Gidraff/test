@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: gidraff/testapi:v1
+          image: gidraff/testapi:fe83773
           resources:
             limits:
               memory: "128Mi"
