@@ -9,10 +9,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     environment: Staging
     strategy:
       matrix:
-        go-version: ["1.19", "1.20", "1.21.x"]
+        go-version: ["1.19", "1.20"]
 
     steps:
       - name: Check out the repository
@@ -22,6 +24,25 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go-version }}
+
+      - name: Ensure Go Module Cache Exists
+        run: mkdir -p /home/runner/go/pkg/mod
+
+      - name: Cache Go Modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: setup-go-${{ runner.os }}-go-${{ steps.setup-go.outputs.go-version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            setup-go-${{ runner.os }}-go-${{ steps.setup-go.outputs.go-version }}-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build the application
+        run: go build -o ./bin/testapi main.go
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -44,7 +65,7 @@ jobs:
           sed -i "s|\(image: $IMAGE_NAME:\)[^ ]*|\1$TAG|" infra/deployment.yaml
           git config --global user.name 'Gidraff'
           git config --global user.email ${{ secrets.EMAIL }}
-          git remote set-url origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/Gidraff/test
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Gidraff/test
           git add infra/deployment.yaml
           git commit -m "Update deployment.yaml"
           git push
