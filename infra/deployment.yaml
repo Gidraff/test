@@ -11,6 +11,7 @@ spec:
       labels:
         app: api
     spec:
+      replicas: 3
       containers:
         - name: api
           image: gidraff/testapi:v1
