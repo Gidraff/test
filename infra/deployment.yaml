@@ -14,7 +14,7 @@ spec:
       replicas: 2
       containers:
         - name: api-v1
-          image: gidraff/testapi:4f04c7b
+          image: gidraff/testapi:10f0ebe
           resources:
             limits:
               memory: "128Mi"
