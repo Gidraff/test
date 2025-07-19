@@ -68,4 +68,5 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Gidraff/test
           git add infra/deployment.yaml
           git commit -m "Update deployment.yaml"
+          git pull origin main --rebase
           git push
