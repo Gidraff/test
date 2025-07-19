@@ -11,10 +11,10 @@ spec:
       labels:
         app: api
     spec:
-      replicas: 3
+      replicas: 2
       containers:
-        - name: api
-          image: gidraff/testapi:4f73921
+        - name: api-v1
+          image: gidraff/testapi:4f04c7b
           resources:
             limits:
               memory: "128Mi"
